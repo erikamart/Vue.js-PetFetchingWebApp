@@ -2,9 +2,11 @@
 
 # test-project
 
-> Vue.js Mini Workshop [#1: Build A Simple Pet Fetching Web App](https://workshops.vuevixens.org/workshops/vue/minis/mini1.html)
-> View my completed project [HERE](https://8nhrd.csb.app/)
-> Otherwise Fork this repo and follow the Build Setup below.
+- Vue.js Mini Workshop [#1: Build A Simple Pet Fetching Web App](https://workshops.vuevixens.org/workshops/vue/minis/mini1.html)
+
+- View my completed project [HERE](https://8nhrd.csb.app/)
+
+- Otherwise Fork this repo and follow the Build Setup below.
 
 ## Build Setup
 
