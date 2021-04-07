@@ -1,37 +1,91 @@
 <template>
   <v-app>
-      <v-content class="dogs-layout">
-        <v-container fill-height>
-          <div class="dogs-overlay">
-            <h1 class="display-2 text-xs-center">Choose your favorite dogs</h1>
-            <v-card class="dog-card">
-              <v-card-media height="400px"></v-card-media>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn icon>
-                  <v-icon>favorite</v-icon>
-                </v-btn>
-                <v-btn icon>
-                  <v-icon>forward</v-icon>
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </div>
-        </v-container>
-      </v-content>
+    <v-main class="dogs-layout">
+      <v-container fill-height>
+        <div class="dogs-overlay">
+          <h1 class="display-2 text-xs-center">Choose your favorite dogs</h1>
+          <v-card class="dog-card">
+            <v-img height="400px" :src="currentDogLink"></v-img>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                icon
+                @click="addToFavorites"
+                :disabled="isAlreadyInFavorites"
+              >
+                <v-icon>favorite</v-icon>
+              </v-btn>
+              <v-btn icon @click="loadNewDog">
+                <v-icon>forward</v-icon>
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+          <v-container grid-list-md fluid>
+            <v-layout wrap>
+              <v-flex
+                xs6
+                sm4
+                md2
+                v-for="(pet, index) in favoriteDogs"
+                :key="pet"
+              >
+                <v-card class="dog-card">
+                  <v-img height="150px" :src="pet"></v-img>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn icon @click="removeFromFavorites(index)">
+                      <v-icon>delete</v-icon>
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </div>
+      </v-container>
+    </v-main>
   </v-app>
 </template>
 
-<script>
-import HelloWorld from "./components/HelloWorld";
 
+<script>
+import axios from "axios";
 export default {
-  name: "App",
-  components: {
-    HelloWorld
-  }
+  data() {
+    return {
+      currentDogLink: "",
+      favoriteDogs: [],
+    };
+  },
+  methods: {
+    loadNewDog() {
+      axios
+        .get("https://dog.ceo/api/breeds/image/random")
+        .then((response) => {
+          this.currentDogLink = response.data.message;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    addToFavorites() {
+      this.favoriteDogs.push(this.currentDogLink);
+    },
+    removeFromFavorites(index) {
+      this.favoriteDogs.splice(index, 1);
+    },
+  },
+  created() {
+    this.loadNewDog();
+  },
+  computed: {
+    isAlreadyInFavorites() {
+      return this.favoriteDogs.indexOf(this.currentDogLink) > -1;
+    },
+  },
 };
 </script>
+
 
 <style>
 img {
@@ -45,7 +99,7 @@ h1 {
 .dogs-layout {
   width: 100%;
   background: #fff center repeat;
-  background-image: url("https://github.com/VueVixens/projects/blob/master/petshop/images/bg3.jpg?raw=true");
+  background-image: url("https://github.com/FrontEndFoxes/projects/blob/main/petshop/images/bg3.jpg?raw=true");
 }
 
 .dogs-overlay {
@@ -68,3 +122,4 @@ h1 {
   max-width: 600px;
 }
 </style>
+
