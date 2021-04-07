@@ -5,7 +5,13 @@
         <div class="dogs-overlay">
           <h1 class="display-2 text-xs-center">Choose your favorite dogs</h1>
           <v-card class="dog-card">
-            <v-img height="400px" :src="currentDogLink"></v-img>
+            <transition name="fade">
+              <v-img
+                v-if="currentDogLink"
+                height="400px"
+                :src="currentDogLink"
+              ></v-img>
+            </transition>
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn
@@ -21,7 +27,7 @@
             </v-card-actions>
           </v-card>
           <v-container grid-list-md fluid>
-            <v-layout wrap>
+            <transition-group name="slide" tag="v-layout" class="wrap">
               <v-flex
                 xs6
                 sm4
@@ -29,17 +35,12 @@
                 v-for="(pet, index) in favoriteDogs"
                 :key="pet"
               >
-                <v-card class="dog-card">
-                  <v-img height="150px" :src="pet"></v-img>
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn icon @click="removeFromFavorites(index)">
-                      <v-icon>delete</v-icon>
-                    </v-btn>
-                  </v-card-actions>
-                </v-card>
+                <app-dog
+                  :dog="pet"
+                  @remove="removeFromFavorites(index)"
+                ></app-dog>
               </v-flex>
-            </v-layout>
+            </transition-group>
           </v-container>
         </div>
       </v-container>
@@ -50,7 +51,11 @@
 
 <script>
 import axios from "axios";
+import Dog from "./components/Dog";
 export default {
+  components: {
+    appDog: Dog,
+  },
   data() {
     return {
       currentDogLink: "",
@@ -59,6 +64,7 @@ export default {
   },
   methods: {
     loadNewDog() {
+      this.currentDogLink = "";
       axios
         .get("https://dog.ceo/api/breeds/image/random")
         .then((response) => {
@@ -120,6 +126,32 @@ h1 {
 .dog-card {
   width: 100%;
   max-width: 600px;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 1s ease;
+}
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.slide-enter-active {
+  transition: all 0.3s ease;
+}
+.slide-enter,
+.slide-leave-to {
+  transform: translateX(10px);
+  opacity: 0;
+}
+
+.slide-leave-active {
+  position: absolute;
+}
+
+.slide-move {
+  transition: transform 0.5s;
 }
 </style>
 
